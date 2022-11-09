@@ -1,5 +1,6 @@
 import React from 'react';
 import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
+import Categories from '../components/Categories';
 
 class Home extends React.Component {
   state = {
@@ -35,6 +36,9 @@ class Home extends React.Component {
     const { haveSearch, searchResults, haveResults } = this.state;
     return (
       <div>
+        <aside>
+          <Categories />
+        </aside>
         <form>
           <input
             data-testid="query-input"
