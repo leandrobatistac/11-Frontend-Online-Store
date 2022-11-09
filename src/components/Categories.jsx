@@ -1,29 +1,19 @@
 import React, { Component } from 'react';
-import { getCategories } from '../services/api';
+import { PropTypes } from 'prop-types';
 
 export default class Categories extends Component {
-  state = {
-    categories: [],
-  };
-
-  componentDidMount() {
-    this.setState({}, async () => {
-      const receba = await getCategories();
-      this.setState({ categories: receba });
-    });
-  }
-
   render() {
-    const { categories } = this.state;
+    const { categories, handleChecked } = this.props;
     return (
       <div>
         { categories.map((c) => (
           <label key={ c.id } htmlFor={ c.id }>
             <input
-              key={ c.id }
+              key={ c.name }
               type="radio"
               name="category"
               id={ c.id }
+              onChange={ handleChecked }
               data-testid="category"
             />
             { c.name }
@@ -33,3 +23,10 @@ export default class Categories extends Component {
     );
   }
 }
+
+Categories.propTypes = {
+  categories: PropTypes.arrayOf(PropTypes.shape({
+    message: PropTypes.string,
+  })).isRequired,
+  handleChecked: PropTypes.func.isRequired,
+};
