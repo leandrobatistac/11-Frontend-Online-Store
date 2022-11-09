@@ -7,7 +7,15 @@ class Home extends React.Component {
     haveSearch: false,
     searchResults: [],
     haveResults: false,
+    categories: [],
   };
+
+  componentDidMount() {
+    this.setState({}, async () => {
+      const receba = await getCategories();
+      this.setState({ categories: receba });
+    });
+  }
 
   handleChange = ({ target: { name, value } }) => {
     const tamanho = 0;
@@ -21,11 +29,20 @@ class Home extends React.Component {
     }
   };
 
+  handleChecked = async (event) => {
+    const { key, id } = event.target;
+    const search = await getProductsFromCategoryAndQuery(id, key);
+
+    this.setState({
+      haveResults: true,
+      searchResults: search.results,
+    });
+  };
+
   handleSearch = async () => {
     const { searchInput } = this.state;
     const result = await getCategories();
     const search = await getProductsFromCategoryAndQuery(result.id, searchInput);
-    console.log(search.results);
 
     if (search.results.length > 0) {
       this.setState({ searchResults: search.results, haveResults: true });
@@ -33,11 +50,11 @@ class Home extends React.Component {
   };
 
   render() {
-    const { haveSearch, searchResults, haveResults } = this.state;
+    const { haveSearch, searchResults, haveResults, categories } = this.state;
     return (
       <div>
         <aside>
-          <Categories />
+          <Categories handleChecked={ this.handleChecked } categories={ categories } />
         </aside>
         <form>
           <input
