@@ -1,8 +1,11 @@
 import React from 'react';
+import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
 
 class Home extends React.Component {
   state = {
     haveSearch: false,
+    searchResults: [],
+    haveResults: false,
   };
 
   handleChange = ({ target: { name, value } }) => {
@@ -17,18 +20,36 @@ class Home extends React.Component {
     }
   };
 
+  handleSearch = async () => {
+    const { searchInput } = this.state;
+    const result = await getCategories();
+    const search = await getProductsFromCategoryAndQuery(result.id, searchInput);
+    console.log(search.results);
+
+    if (search.results.length > 0) {
+      this.setState({ searchResults: search.results, haveResults: true });
+    }
+  };
+
   render() {
-    const { haveSearch } = this.state;
+    const { haveSearch, searchResults, haveResults } = this.state;
     return (
       <div>
         <form>
           <input
-            data-testid=""
+            data-testid="query-input"
             id="search-input"
-            name="search-input"
+            name="searchInput"
             placeholder="Pesquise Aqui"
             onChange={ this.handleChange }
           />
+          <button
+            onClick={ this.handleSearch }
+            data-testid="query-button"
+            type="button"
+          >
+            Pesquisar
+          </button>
         </form>
 
         { !haveSearch
@@ -39,6 +60,21 @@ class Home extends React.Component {
               Digite algum termo de pesquisa ou escolha uma categoria.
             </span>)
           : null }
+
+        { haveResults
+          ? (
+            searchResults.map((product) => (
+
+              <div
+                key={ product.id }
+                data-testid="product"
+              >
+                <p>{ product.title }</p>
+                <p>{ product.price }</p>
+                <img src={ product.thumbnail } alt={ product.id } />
+              </div>
+            )))
+          : <p>Nenhum produto foi encontrado</p> }
       </div>
     );
   }
