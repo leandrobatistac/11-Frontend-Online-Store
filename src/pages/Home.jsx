@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
 import Categories from '../components/Categories';
 
@@ -86,14 +87,19 @@ class Home extends React.Component {
           ? (
             searchResults.map((product) => (
 
-              <div
+              <Link
+                data-testid="product-detail-link"
                 key={ product.id }
-                data-testid="product"
+                to={ `/product/${product.id}` }
               >
-                <p>{ product.title }</p>
-                <p>{ product.price }</p>
-                <img src={ product.thumbnail } alt={ product.id } />
-              </div>
+                <div
+                  data-testid="product"
+                >
+                  <p>{ product.title }</p>
+                  <p>{ product.price }</p>
+                  <img src={ product.thumbnail } alt={ product.id } />
+                </div>
+              </Link>
             )))
           : <p>Nenhum produto foi encontrado</p> }
       </div>
