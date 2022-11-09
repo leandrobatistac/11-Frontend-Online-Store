@@ -6,6 +6,8 @@ class Header extends React.Component {
     return (
       <header>
         <Link to="/"> Home </Link>
+        <br />
+        <Link data-testid="shopping-cart-button" to="/cart"> Cart </Link>
       </header>
     );
   }
