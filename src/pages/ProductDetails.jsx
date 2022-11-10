@@ -1,6 +1,11 @@
 import React from 'react';
 import { PropTypes } from 'prop-types';
-import { getProductById, getLocalStorage } from '../services/api';
+import {
+  getProductById,
+  getLocalStorage,
+  getLocalStorageAvaliação,
+} from '../services/api';
+import EvaluationCard from '../components/EvaluationCard';
 
 class ProductDetails extends React.Component {
   state = {
@@ -9,9 +14,8 @@ class ProductDetails extends React.Component {
     description: '',
     rating: '',
     isButtonDisabled: false,
-    emailReview: '',
-    descriptionReview: '',
-    ratingReview: '',
+    localReview: [],
+    isLoading: false,
   };
 
   async componentDidMount() {
@@ -20,17 +24,12 @@ class ProductDetails extends React.Component {
     this.setState({ objProduct: productSelected });
     const recebaStorage = JSON.parse(localStorage.getItem(id));
     if (recebaStorage !== null) {
-      this.setState({
-        emailReview: recebaStorage.email,
-        descriptionReview: recebaStorage.text,
-        ratingReview: recebaStorage.rating,
-      });
+      this.setState({ localReview: recebaStorage });
     }
   }
 
   onInputChange = (event) => {
     const { target } = event;
-    this.setState({ isButtonDisabled: false });
     this.setState({ [target.name]: target.value });
   };
 
@@ -40,20 +39,23 @@ class ProductDetails extends React.Component {
     const newButtonState = email.length > 0
       && email.includes('@')
       && email.includes('.com')
-      // && rating.length > 0
-      && description.length > 0;
+      && rating.length > 0;
     if (newButtonState === false) {
       this.setState({ isButtonDisabled: !newButtonState });
     } else {
+      this.setState({ isButtonDisabled: !newButtonState });
+      let recebaStorage = getLocalStorageAvaliação(target.id);
+      if (!recebaStorage) {
+        recebaStorage = [];
+      }
       const receba = { email, text: description, rating };
-      localStorage.setItem(target.id, JSON.stringify(receba));
-      this.setState({
-        emailReview: email,
-        descriptionReview: description,
-        ratingReview: rating,
-      });
+      recebaStorage.push(receba);
+      console.log(recebaStorage);
+      localStorage.setItem(target.id, JSON.stringify(recebaStorage));
       this.setState({ email: '', description: '' });
+      this.setState({ localReview: recebaStorage });
     }
+    // window.location.reload(false);
   };
 
   onClickRating = (event) => {
@@ -74,11 +76,10 @@ class ProductDetails extends React.Component {
     const {
       objProduct,
       email,
-      emailReview,
       description,
-      descriptionReview,
       isButtonDisabled,
-      ratingReview,
+      localReview,
+      isLoading,
     } = this.state;
     return (
       <section>
@@ -182,12 +183,15 @@ class ProductDetails extends React.Component {
           </label>
         </form>
         { isButtonDisabled && <p data-testid="error-msg">Campos inválidos</p> }
-        { emailReview && (
-          <div>
-            <p data-testid="review-card-email">{emailReview}</p>
-            <p data-testid="review-card-rating">{ratingReview}</p>
-            <p data-testid="review-card-evaluation">{descriptionReview}</p>
-          </div>) }
+        {
+          localReview.length > 0 && localReview.map((r, index) => (
+            <EvaluationCard
+              key={ index }
+              emailReview={ r.email }
+              ratingReview={ r.rating }
+              descriptionReview={ r.text }
+            />))
+        }
       </section>
     );
   }

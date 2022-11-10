@@ -25,3 +25,10 @@ export function getLocalStorage() {
     : undefined;
   return storage;
 }
+
+export function getLocalStorageAvaliação(id) {
+  const storage = localStorage.getItem(id) !== undefined
+    ? JSON.parse(localStorage.getItem(id))
+    : undefined;
+  return storage;
+}
