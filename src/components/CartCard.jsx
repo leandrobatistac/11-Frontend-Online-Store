@@ -1,20 +1,33 @@
 import React from 'react';
-import { PropTypes } from 'prop-types';
-import { getProductById } from '../services/api';
+import { getLocalStorage } from '../services/api';
 
 class CartCard extends React.Component {
   render() {
-    const { id } = this.props;
+    const cartAdded = getLocalStorage();
+
+    const addedUnique = cartAdded.reduce((acc, curr) => {
+      if (!acc.some((item) => item.id === curr.id)) acc.push(curr);
+      return acc;
+    }, []);
+
+    console.log(cartAdded);
     return (
       <section>
-        <p>{ () => getProductById(id).title }</p>
+        { addedUnique.map((product, index) => (
+          <div key={ index }>
+            <img alt={ product.id } src={ product.thumbnail } />
+            <p data-testid="shopping-cart-product-name">{ product.title }</p>
+            <p
+              data-testid="shopping-cart-product-quantity"
+            >
+              { cartAdded.filter((p) => p.id === product.id).length }
+
+            </p>
+          </div>
+        )) }
       </section>
     );
   }
 }
 
 export default CartCard;
-
-CartCard.propTypes = {
-  id: PropTypes.string.isRequired,
-};

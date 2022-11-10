@@ -114,7 +114,7 @@ class Home extends React.Component {
                 <button
                   type="button"
                   data-testid="product-add-to-cart"
-                  onClick={ () => this.saveLocalStorage(product.id) }
+                  onClick={ () => this.saveLocalStorage(product) }
                 >
                   Adicionar ao Carrinho
                 </button>

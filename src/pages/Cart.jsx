@@ -24,11 +24,7 @@ class Cart extends React.Component {
           !haveItems
             ? (
               <p data-testid="shopping-cart-empty-message">Seu carrinho está vazio</p>
-            ) : (
-              objIDs.map((e) => (
-                <CartCard key={ e } id={ e } />
-              ))
-            )
+            ) : <CartCard id={ objIDs } />
         }
       </section>
     );
