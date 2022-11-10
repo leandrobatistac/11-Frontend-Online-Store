@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
+import { getCategories,
+  getProductsFromCategoryAndQuery,
+  getLocalStorage } from '../services/api';
 import Categories from '../components/Categories';
 
 class Home extends React.Component {
@@ -50,6 +52,15 @@ class Home extends React.Component {
     }
   };
 
+  saveLocalStorage = (idsAdicionados) => {
+    let idsSalvos = getLocalStorage();
+    if (!idsSalvos) {
+      idsSalvos = [];
+    }
+    idsSalvos.push(idsAdicionados);
+    localStorage.setItem('productSaveID', JSON.stringify(idsSalvos));
+  };
+
   render() {
     const { haveSearch, searchResults, haveResults, categories } = this.state;
     return (
@@ -87,19 +98,27 @@ class Home extends React.Component {
           ? (
             searchResults.map((product) => (
 
-              <Link
-                data-testid="product-detail-link"
-                key={ product.id }
-                to={ `/product/${product.id}` }
-              >
-                <div
-                  data-testid="product"
+              <div key={ product.id }>
+                <Link
+                  data-testid="product-detail-link"
+                  to={ `/product/${product.id}` }
                 >
-                  <p>{ product.title }</p>
-                  <p>{ product.price }</p>
-                  <img src={ product.thumbnail } alt={ product.id } />
-                </div>
-              </Link>
+                  <div
+                    data-testid="product"
+                  >
+                    <p>{ product.title }</p>
+                    <p>{ product.price }</p>
+                    <img src={ product.thumbnail } alt={ product.id } />
+                  </div>
+                </Link>
+                <button
+                  type="button"
+                  data-testid="product-add-to-cart"
+                  onClick={ () => this.saveLocalStorage(product) }
+                >
+                  Adicionar ao Carrinho
+                </button>
+              </div>
             )))
           : <p>Nenhum produto foi encontrado</p> }
       </div>
