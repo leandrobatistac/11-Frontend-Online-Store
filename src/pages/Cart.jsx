@@ -9,7 +9,7 @@ class Cart extends React.Component {
   };
 
   componentDidMount() {
-    if (getLocalStorage().length > 0) {
+    if (getLocalStorage() !== null) {
       this.setState({ haveItems: true });
     }
 
