@@ -15,7 +15,6 @@ class ProductDetails extends React.Component {
     rating: '',
     isButtonDisabled: false,
     localReview: [],
-    isLoading: false,
   };
 
   async componentDidMount() {
@@ -79,7 +78,6 @@ class ProductDetails extends React.Component {
       description,
       isButtonDisabled,
       localReview,
-      isLoading,
     } = this.state;
     return (
       <section>
