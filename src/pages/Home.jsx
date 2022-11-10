@@ -52,14 +52,14 @@ class Home extends React.Component {
     }
   };
 
-  saveLocalStorage = (idsAdicionados) => {
+  saveLocalStorage(idsAdicionados) {
     let idsSalvos = getLocalStorage();
     if (!idsSalvos) {
       idsSalvos = [];
     }
     idsSalvos.push(idsAdicionados);
     localStorage.setItem('productSaveID', JSON.stringify(idsSalvos));
-  };
+  }
 
   render() {
     const { haveSearch, searchResults, haveResults, categories } = this.state;
