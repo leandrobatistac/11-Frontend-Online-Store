@@ -1,6 +1,6 @@
 import React from 'react';
 import { PropTypes } from 'prop-types';
-import { getProductById } from '../services/api';
+import { getProductById, getLocalStorage } from '../services/api';
 
 class ProductDetails extends React.Component {
   state = {
@@ -13,9 +13,17 @@ class ProductDetails extends React.Component {
     this.setState({ objProduct: productSelected });
   }
 
+  saveLocalStorage(idsAdicionados) {
+    let idsSalvos = getLocalStorage();
+    if (!idsSalvos) {
+      idsSalvos = [];
+    }
+    idsSalvos.push(idsAdicionados);
+    localStorage.setItem('productSaveID', JSON.stringify(idsSalvos));
+  }
+
   render() {
     const { objProduct } = this.state;
-    const { history } = this.props;
     return (
       <section>
         <p data-testid="product-detail-name">{ objProduct.title }</p>
@@ -27,10 +35,10 @@ class ProductDetails extends React.Component {
         <p data-testid="product-detail-price">{ objProduct.price }</p>
         <button
           type="button"
-          data-testid="shopping-cart-button"
-          onClick={ () => { history.push('/cart'); } }
+          data-testid="product-detail-add-to-cart"
+          onClick={ () => this.saveLocalStorage(objProduct) }
         >
-          Carrinho de Compras
+          Adicionar ao Carrinho
         </button>
       </section>
     );
@@ -43,10 +51,6 @@ ProductDetails.propTypes = {
       id: PropTypes.string.isRequired,
     }),
   }).isRequired,
-};
-
-ProductDetails.propTypes = {
-  history: PropTypes.shape().isRequired,
 };
 
 export default ProductDetails;
