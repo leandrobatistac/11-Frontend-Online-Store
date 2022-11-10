@@ -18,3 +18,10 @@ export async function getProductById(id) {
   const data = await result.json();
   return data;
 }
+
+export function getLocalStorage() {
+  const storage = localStorage.getItem('productSaveID') !== undefined
+    ? JSON.parse(localStorage.getItem('productSaveID'))
+    : undefined;
+  return storage;
+}
